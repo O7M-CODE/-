@@ -57,6 +57,31 @@ export async function generateCodes(count: number) {
   return { success: true }
 }
 
+export async function createCustomCode(customCode: string) {
+  const { supabase, user } = await requireAdmin()
+
+  const trimmed = customCode.trim().toUpperCase()
+  if (!trimmed || trimmed.length < 3) {
+    return { success: false, error: "الكود يجب أن يكون 3 أحرف على الأقل" }
+  }
+
+  const { error } = await supabase.from("activation_codes").insert({
+    code: trimmed,
+    created_by: user.id,
+    is_used: false,
+  })
+
+  if (error) {
+    if (error.code === "23505") {
+      return { success: false, error: "هذا الكود موجود مسبقاً" }
+    }
+    return { success: false, error: "فشل في إنشاء الكود" }
+  }
+
+  revalidatePath("/admin")
+  return { success: true }
+}
+
 export async function deleteCode(codeId: string) {
   const { supabase } = await requireAdmin()
 
@@ -67,6 +92,38 @@ export async function deleteCode(codeId: string) {
 
   if (error) {
     return { success: false, error: "فشل في حذف الكود" }
+  }
+
+  revalidatePath("/admin")
+  return { success: true }
+}
+
+export async function bulkDeleteCodes(codeIds: string[]) {
+  const { supabase } = await requireAdmin()
+
+  const { error } = await supabase
+    .from("activation_codes")
+    .delete()
+    .in("id", codeIds)
+
+  if (error) {
+    return { success: false, error: "فشل في حذف الأكواد" }
+  }
+
+  revalidatePath("/admin")
+  return { success: true }
+}
+
+export async function deleteAllUsedCodes() {
+  const { supabase } = await requireAdmin()
+
+  const { error } = await supabase
+    .from("activation_codes")
+    .delete()
+    .eq("is_used", true)
+
+  if (error) {
+    return { success: false, error: "فشل في حذف الأكواد المستخدمة" }
   }
 
   revalidatePath("/admin")
