@@ -1,18 +1,3 @@
--- Drop existing policies safely
-drop policy if exists "users_read_own_profile" on public.profiles;
-drop policy if exists "admins_read_all_profiles" on public.profiles;
-drop policy if exists "admins_update_all_profiles" on public.profiles;
-drop policy if exists "profiles_insert_own" on public.profiles;
-drop policy if exists "admins_read_codes" on public.activation_codes;
-drop policy if exists "admins_insert_codes" on public.activation_codes;
-drop policy if exists "admins_update_codes" on public.activation_codes;
-drop policy if exists "admins_delete_codes" on public.activation_codes;
-drop policy if exists "anyone_read_unused_codes" on public.activation_codes;
-drop policy if exists "anyone_update_unused_codes" on public.activation_codes;
-
--- Drop existing trigger
-drop trigger if exists on_auth_user_created on auth.users;
-
 -- Profiles table
 create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
@@ -71,6 +56,8 @@ begin
   return new;
 end;
 $$;
+
+drop trigger if exists on_auth_user_created on auth.users;
 
 create trigger on_auth_user_created
   after insert on auth.users
