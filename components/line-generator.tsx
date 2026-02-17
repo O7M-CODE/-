@@ -59,18 +59,18 @@ export function LineGenerator() {
           const lines = field.value.split("\n")
           const val = (lines[i] ?? "").trim()
           if (val && field.label.trim()) {
-            parts.push(`${field.label.trim()} : ${val} /`)
+            parts.push(`${field.label.trim()} : ${val}`)
           }
         } else {
           const val = field.value.trim()
           if (val && field.label.trim()) {
-            parts.push(`${field.label.trim()} : ${val} /`)
+            parts.push(`${field.label.trim()} : ${val}`)
           }
         }
       }
 
       if (parts.length > 0) {
-        result.push(parts.join(" "))
+        result.push(parts.join(" / "))
       }
     }
 
