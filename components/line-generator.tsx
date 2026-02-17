@@ -4,7 +4,8 @@ import { useState, useCallback, useMemo, useRef } from "react"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Check, Copy, Instagram, Trash2, Plus } from "lucide-react"
+import { Check, Copy, Instagram, Trash2, Plus, LogOut, Shield } from "lucide-react"
+import Link from "next/link"
 
 type Field = {
   id: string
@@ -20,7 +21,7 @@ const defaultFields: Field[] = [
   { id: "snap", label: "كود السناب", value: "", multiline: true },
 ]
 
-export function LineGenerator() {
+export function LineGenerator({ isAdmin, userEmail }: { isAdmin: boolean; userEmail: string }) {
   const [fields, setFields] = useState<Field[]>(defaultFields)
   const [copied, setCopied] = useState(false)
   const nextIdRef = useRef(1)
@@ -95,17 +96,45 @@ export function LineGenerator() {
   return (
     <div className="flex min-h-screen flex-col items-center bg-background px-4 py-8 gap-6">
       {/* Header */}
-      <div className="flex items-center gap-3">
-        <h1 className="text-3xl font-bold text-foreground tracking-tight">Flash Code</h1>
-        <a
-          href="https://www.instagram.com/flash1_store"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-muted-foreground hover:text-primary transition-colors"
-          aria-label="Instagram flash1_store"
-        >
-          <Instagram className="h-6 w-6" />
-        </a>
+      <div className="flex w-full max-w-3xl items-center justify-between">
+        <div className="flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-foreground tracking-tight">Flash Code</h1>
+          <a
+            href="https://www.instagram.com/flash1_store"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted-foreground hover:text-primary transition-colors"
+            aria-label="Instagram flash1_store"
+          >
+            <Instagram className="h-6 w-6" />
+          </a>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground hidden sm:block">{userEmail}</span>
+          {isAdmin && (
+            <Link href="/admin">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-1.5 text-muted-foreground hover:text-foreground"
+              >
+                <Shield className="h-4 w-4" />
+                <span className="hidden sm:inline">{"لوحة التحكم"}</span>
+              </Button>
+            </Link>
+          )}
+          <form action="/auth/logout" method="post">
+            <Button
+              variant="ghost"
+              size="sm"
+              type="submit"
+              className="gap-1.5 text-muted-foreground hover:text-foreground"
+            >
+              <LogOut className="h-4 w-4" />
+              <span className="hidden sm:inline">{"خروج"}</span>
+            </Button>
+          </form>
+        </div>
       </div>
 
       {/* Input Card */}
