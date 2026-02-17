@@ -22,20 +22,9 @@ export async function login(formData: FormData) {
     redirect(`/auth/login?error=${encodeURIComponent("البريد الإلكتروني أو كلمة المرور غير صحيحة")}`)
   }
 
-  // Check if user account is active
-  if (data.user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("is_active, is_admin")
-      .eq("id", data.user.id)
-      .single()
-
-    if (profile && !profile.is_active && !profile.is_admin) {
-      await supabase.auth.signOut()
-      redirect(`/auth/login?error=${encodeURIComponent("حسابك معطل. تواصل مع المسؤول لتفعيل حسابك.")}`)
-    }
-  }
-
+  // Redirect to home - the page will check activation status
+  // Inactive users will see a "pending review" page
+  // Active users will see the main app
   redirect("/")
 }
 
