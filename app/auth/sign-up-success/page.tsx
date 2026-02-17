@@ -17,7 +17,7 @@ export default function SignUpSuccessPage() {
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <p className="text-sm text-muted-foreground">
-            {"تم إنشاء حسابك. تحقق من بريدك الإلكتروني لتأكيد الحساب ثم سجل دخولك."}
+            {"تم إنشاء حسابك بنجاح. يمكنك الآن تسجيل الدخول."}
           </p>
           <Button asChild className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
             <Link href="/auth/login">{"تسجيل الدخول"}</Link>

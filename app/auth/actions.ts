@@ -55,14 +55,11 @@ export async function signup(formData: FormData) {
     redirect(`/auth/sign-up?error=${encodeURIComponent("كود التفعيل غير صالح أو مستخدم مسبقاً")}`)
   }
 
-  // Sign up the user
+  // Sign up the user (no email verification required)
   const { data: authData, error: authError } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      emailRedirectTo:
-        process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ||
-        `${process.env.NEXT_PUBLIC_SITE_URL || ""}/`,
       data: {
         display_name: email.split("@")[0],
       },
@@ -88,7 +85,8 @@ export async function signup(formData: FormData) {
       .eq("id", codeData.id)
   }
 
-  redirect("/auth/sign-up-success")
+  // User is auto-confirmed, redirect to home
+  redirect("/")
 }
 
 export async function signout() {
