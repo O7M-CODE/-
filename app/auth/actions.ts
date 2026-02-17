@@ -13,27 +13,13 @@ export async function login(formData: FormData) {
     redirect("/auth/login?error=يرجى ملء جميع الحقول")
   }
 
-  const { data, error } = await supabase.auth.signInWithPassword({
+  const { error } = await supabase.auth.signInWithPassword({
     email,
     password,
   })
 
   if (error) {
     redirect(`/auth/login?error=${encodeURIComponent("البريد الإلكتروني أو كلمة المرور غير صحيحة")}`)
-  }
-
-  // Check if user account is active
-  if (data.user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("is_active, is_admin")
-      .eq("id", data.user.id)
-      .single()
-
-    if (profile && !profile.is_active && !profile.is_admin) {
-      await supabase.auth.signOut()
-      redirect(`/auth/login?error=${encodeURIComponent("حسابك معطل. تواصل مع المسؤول لتفعيل حسابك.")}`)
-    }
   }
 
   redirect("/")
