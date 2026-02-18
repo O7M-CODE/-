@@ -1,6 +1,7 @@
 "use server"
 
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { redirect } from "next/navigation"
 
 export async function login(formData: FormData) {
@@ -55,22 +56,20 @@ export async function signup(formData: FormData) {
     redirect(`/auth/sign-up?error=${encodeURIComponent("كود التفعيل غير صالح أو مستخدم مسبقاً")}`)
   }
 
-  // Sign up the user
-  const { data: authData, error: authError } = await supabase.auth.signUp({
+  // Sign up the user using the admin client to auto-confirm (no email verification needed)
+  const adminClient = createAdminClient()
+
+  const { data: authData, error: authError } = await adminClient.auth.admin.createUser({
     email,
     password,
-    options: {
-      emailRedirectTo:
-        process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ||
-        `${process.env.NEXT_PUBLIC_SITE_URL || ""}/`,
-      data: {
-        display_name: email.split("@")[0],
-      },
+    email_confirm: true,
+    user_metadata: {
+      display_name: email.split("@")[0],
     },
   })
 
   if (authError) {
-    if (authError.message.includes("already registered")) {
+    if (authError.message.includes("already registered") || authError.message.includes("already been registered")) {
       redirect(`/auth/sign-up?error=${encodeURIComponent("هذا البريد الإلكتروني مسجل مسبقاً")}`)
     }
     redirect(`/auth/sign-up?error=${encodeURIComponent("حدث خطأ أثناء التسجيل")}`)
