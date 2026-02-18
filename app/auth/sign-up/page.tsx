@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { AlertCircle } from "lucide-react"
+import { AlertCircle, Sparkles } from "lucide-react"
 
 export default async function SignUpPage(props: {
   searchParams: Promise<{ error?: string }>
@@ -14,7 +14,18 @@ export default async function SignUpPage(props: {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <Card className="w-full max-w-md border-border bg-card shadow-lg">
+      <div className="flex w-full max-w-md flex-col gap-4">
+        <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 text-center" dir="rtl">
+          <div className="flex items-center justify-center gap-2 text-primary">
+            <Sparkles className="h-5 w-5" />
+            <span className="text-sm font-semibold">{"استعمل الكود للوصول إلى الأداة"}</span>
+            <Sparkles className="h-5 w-5" />
+          </div>
+          <div className="mt-2 inline-block rounded-md bg-primary px-4 py-1.5 font-mono text-lg font-bold tracking-widest text-primary-foreground">
+            FLASH26
+          </div>
+        </div>
+      <Card className="w-full border-border bg-card shadow-lg">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-card-foreground">
             {"إنشاء حساب جديد"}
@@ -92,6 +103,7 @@ export default async function SignUpPage(props: {
           </p>
         </CardContent>
       </Card>
+      </div>
     </div>
   )
 }
